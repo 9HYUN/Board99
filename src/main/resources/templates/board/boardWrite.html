@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<body>
+    <div class="container">
+        <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+            <form action="/board/writePro" method="post" ENCTYPE="multipart/form-data">
+
+            <input name="title" type="text" class="form-control mt-4 mb-2" placeholder="제목을 입력해주세요.">
+
+            <textarea class="form-control" rows="20" name="content" placeholder="내용을 입력해주세요"></textarea>
+                <button type="submit" class="btn btn-primary">작성</button>
+<!--                <input type="file" name="file">-->
+
+        </form>
+        <div th:replace="fragments/footer :: footer" />
+    </div> <!-- /container -->
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<script th:inline="javascript">
+
+    /*<![CDATA[*/
+
+    var message = [[${message}]];
+    alert(message);
+
+    location.replace([[${searchUrl}]]);
+
+    /*]]>*/
+</script>
+
+<body>
+<div th:replace="fragments/footer :: footer"/>
+</body>
+</html>
