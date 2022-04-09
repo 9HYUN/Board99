@@ -4,13 +4,10 @@ import goldra9.board.entity.Board;
 import goldra9.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 
 @Controller
@@ -18,17 +15,17 @@ import org.springframework.web.multipart.MultipartFile;
 public class BoardController
 {
     private final BoardService boardService;
+
     @GetMapping("/board/write")
     public String boardWriteForm()
     {
         return "board/boardWrite";
     }
 
-    @PostMapping("/board/writePro") //pro --> process 처리하다 머 이런 뜻임
-    public String boardWritePro(Board board, Model model, MultipartFile file) throws Exception {
+    @PostMapping("/board/writePro")
+    public String boardWritePro(Board board,Model model) {
 
-        boardService.write(board, file);
-
+        boardService.write(board);
         model.addAttribute("message","글 작성이 완료되었습니다.");
         model.addAttribute("searchUrl","/board/list");
         return "message";
@@ -44,6 +41,8 @@ public class BoardController
     @GetMapping("/board/view")
     public String boardView(Model model, Integer id)
     {
+        boardService.boardView(id).addCount(); //조회수 안나오냐
+
         model.addAttribute("board", boardService.boardView(id));
         return "board/boardView";
     }
@@ -58,16 +57,17 @@ public class BoardController
     @GetMapping("/board/update/{id}")
     public String updateForm(@PathVariable("id") Integer id, Model model)
     {
+
         model.addAttribute("board", boardService.boardView(id));
         return "board/boardUpdate";
     }
 
-    @PostMapping("/board/update/{id}") //pathvariable 쓰면 /board/update/9 <-- 처럼 깔끔하게 나온다. //또다른 방법은 쿼리스트링
-    public String update(@PathVariable("id") Integer id, Board board, Model model, MultipartFile file) throws Exception {
+    @PostMapping("/board/update/{id}")
+    public String update(@PathVariable("id") Integer id, Board board, Model model) throws Exception {
         Board boardTemp = boardService.boardView(id); //기존객체 가져오기
         boardTemp.setTitle(board.getTitle());
         boardTemp.setContent(board.getContent());
-        boardService.write(boardTemp, file);
+        boardService.write(boardTemp);
         model.addAttribute("message","글 수정이 완료되었습니다.");
         model.addAttribute("searchUrl","/board/list");
         return "message";

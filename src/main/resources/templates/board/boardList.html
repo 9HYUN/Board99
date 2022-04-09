@@ -5,12 +5,13 @@
 <body>
 
     <div class="container">
-
+        <div th:replace="fragments/bodyHeader :: bodyHeader"/>
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>글번호</th>
                     <th>제목</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -31,6 +32,7 @@
 <!--            <input type="text" name="searchKeyword">-->
 <!--            <button type="submit">검색</button>-->
 <!--        </form>-->
+        <div th:replace="fragments/footer :: footer" />
     </div>
 
 </body>

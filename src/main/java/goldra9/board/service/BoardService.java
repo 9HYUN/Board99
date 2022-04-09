@@ -8,15 +8,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class BoardService
 {
-
     private final BoardRepository boardRepository;
-    public void write(Board board, MultipartFile file) throws Exception {
+    public void write(Board board){
 
 //        String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
 //
@@ -30,7 +30,7 @@ public class BoardService
 //
 //        board.setFileName(fileName);
 //        board.setFilePath("/files/" + fileName);
-
+        board.createBoard();
         boardRepository.save(board);
     }
 
@@ -41,13 +41,14 @@ public class BoardService
 
     public Board boardView(Integer id)
     {
+        Optional<Board> result = boardRepository.findById(id);
+        return result.get();
 
-        return boardRepository.findById(id).get();
     }
 
     public void delete(Integer id)
-    {
-        boardRepository.deleteById(id);
+        {
+            boardRepository.deleteById(id);
     }
 
 }
