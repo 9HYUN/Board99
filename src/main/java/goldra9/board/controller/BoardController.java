@@ -1,13 +1,18 @@
 package goldra9.board.controller;
 
 import goldra9.board.entity.Board;
+import goldra9.board.repository.BoardRepository;
 import goldra9.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Controller
@@ -32,27 +37,50 @@ public class BoardController
     }
 
     @GetMapping("/board/list")
-    public String boardList(Model model)
+    public String boardList(Model model,
+                            @PageableDefault(size = 2, sort = "id",
+                                    direction = Sort.Direction.DESC) Pageable pageable,
+                            @RequestParam(required = false, defaultValue = "") String searchKeyword)
     {
-        model.addAttribute("list", boardService.boardList());
+
+        Page<Board> list = boardService.boardSearchList(searchKeyword, pageable);
+
+        int nowPage = list.getPageable().getPageNumber() + 1;
+        int startPage;
+        int endPage;
+        if(nowPage >= list.getTotalPages() - 2)
+        {
+            startPage = Math.max(list.getTotalPages() - 4,1);
+        } else {
+            startPage = Math.max(1, list.getPageable().getPageNumber() - 1);
+        }
+
+        if(nowPage <= 3)
+        {
+            endPage = 5;
+            
+        } else {
+            endPage = Math.min(list.getTotalPages(), nowPage + 2);
+        }
+
+
+        model.addAttribute("list", list);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
         return "board/boardList";
     }
 
     @GetMapping("/board/view")
     public String boardView(Model model, Integer id)
     {
-        boardService.boardView(id).addCount(); //조회수 안나오냐
 
+//        boardService.addCount(id);
         model.addAttribute("board", boardService.boardView(id));
         return "board/boardView";
     }
 
-    @GetMapping("/board/delete")
-    public String boardDelete(Integer id)
-    {
-        boardService.delete(id);
-        return "redirect:/board/list";
-    }
+
 
     @GetMapping("/board/update/{id}")
     public String updateForm(@PathVariable("id") Integer id, Model model)
@@ -62,6 +90,8 @@ public class BoardController
         return "board/boardUpdate";
     }
 
+
+
     @PostMapping("/board/update/{id}")
     public String update(@PathVariable("id") Integer id, Board board, Model model) throws Exception {
         Board boardTemp = boardService.boardView(id); //기존객체 가져오기
@@ -70,6 +100,16 @@ public class BoardController
         boardService.write(boardTemp);
         model.addAttribute("message","글 수정이 완료되었습니다.");
         model.addAttribute("searchUrl","/board/list");
+        return "message";
+    }
+
+    @PostMapping("/board/delete/{id}")
+    public String boardDelete(@PathVariable("id") Integer id, Model model)
+    {
+        boardService.delete(id);
+        model.addAttribute("message", "글 삭제가 완료되었습니다.");
+        model.addAttribute("searchUrl","/board/list");
+
         return "message";
     }
 

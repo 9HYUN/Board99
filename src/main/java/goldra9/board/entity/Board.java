@@ -2,10 +2,7 @@ package goldra9.board.entity;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity @Data
@@ -14,22 +11,24 @@ public class Board
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
     private LocalDateTime writeDate;
-    private Long count;
+    private int count;
 
+    //== 생성 로직 ==//
     public void createBoard()
     {
         this.writeDate = LocalDateTime.now();
-        this.count = 0l;
-    }
-    public Long addCount()
-    {
-        this.count += 1 ;
-        return count;
+        this.count = 0;
     }
 
-//    private String fileName;
-//    private String filePath;
+    //== 조회수 ==//
+    public void addCount()
+    {
+        this.count += 1;
+    }
+
+
 
 }

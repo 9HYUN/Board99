@@ -9,7 +9,7 @@
             <form th:action="@{/board/update/{id}(id = ${board.id})}" method="post">
 
                 <input name="title" type="text" class="form-control mt-4 mb-2" th:value="${board.title}">
-                <textarea name="content" th:text="${board.content}" class="form-control">내용</textarea>
+                <textarea name="content" th:text="${board.content}" class="form-control" rows="20">내용</textarea>
                 <button type="submit" class="btn btn-primary">수정</button>
             </form>
 

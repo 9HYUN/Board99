@@ -6,12 +6,24 @@
 
     <div class="container">
         <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+        <form class="row g-3 d-flex justify-content-end" method="get" th:action="@{/board/list}">
+
+            <div class="col-auto">
+                <label for="searchKeyword" class="visually-hidden">검색</label>
+                <input type="text" class="form-control" id="searchKeyword" name="searchKeyword" th:value="${param.searchKeyword}">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mb-2">검색</button>
+            </div>
+        </form>
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>글번호</th>
                     <th>제목</th>
-
+                    <th>생성날짜</th>
+                    <th>조회수</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,18 +32,30 @@
                     <td>
                         <a th:text="${board.title}" th:href="@{/board/view(id=${board.id})}"></a>
                     </td>
+                    <td th:text="${#temporals.format(board.writeDate, 'yyyy-MM-dd')}">생성날짜</td>
+                    <td th:text="${board.count}">조회수</td>
                 </tr>
             </tbody>
         </table>
+        <div class="d-flex justify-content-end">총 건수:
+            <span th:text="${list.TotalElements}"></span>
+        </div>
+        <nav aria-label="...">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${1 == list.pageable.pageNumber + 1} ? 'disabled'">
+                    <a class="page-link" href="#" th:href="@{/board/list(page=${list.pageable.pageNumber - 1},searchKeyword=${param.searchKeyword})}">Previous</a>
+                </li>
+                <li class="page-item" th:classappend="${i == list.pageable.pageNumber + 1} ? 'disabled' " th:each ="i : ${#numbers.sequence(startPage, endPage)}">
+                    <a class="page-link" href="#" th:href="@{/board/list(page=${i - 1},searchKeyword=${param.searchKeyword})}" th:text="${i}">1</a></li>
 
-<!--        <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">-->
-<!--            <a th:if="${page != nowPage}" th:href="@{/board/list(page = ${page - 1}, searchKeyword = ${param.searchKeyword})}" th:text="${page}"></a>-->
-<!--            <strong th:if="${page == nowPage}" th:text="${page}" style="color : red"></strong>-->
-<!--        </th:block>-->
-<!--        <form th:action="@{/board/list}" method="get">-->
-<!--            <input type="text" name="searchKeyword">-->
-<!--            <button type="submit">검색</button>-->
-<!--        </form>-->
+                <li class="page-item" th:classappend="${list.totalPages == list.pageable.pageNumber + 1} ? 'disabled'">
+                    <a class="page-link" href="#" th:href="@{/board/list(page=${list.pageable.pageNumber + 1}, searchKeyword=${param.searchKeyword})}">Next</a>
+                </li>
+
+            </ul>
+
+        </nav>
+
         <div th:replace="fragments/footer :: footer" />
     </div>
 

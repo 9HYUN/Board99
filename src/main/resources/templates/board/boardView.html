@@ -6,11 +6,13 @@
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
 
 
-        <h2 th:text="${board.title}">제목입니다.</h2>
-        <p th:text="${board.content}" class="border">내용이 들어갈 부분입니다.</p>
-<!--    <a th:href="@{${board.filepath}}">다운받기</a>-->
+        <h2 th:text="${board.title}">제목</h2>
+        <p th:text="${board.content}" class="border" rows="20">내용</p>
 
-    <a th:href="@{/board/update/{id}(id = ${board.id})}" class="btn btn-primary" role="button">수정</a>
+    <form th:action="@{/board/delete/{id}(id = ${board.id})}" method="post">
+        <a th:href="@{/board/update/{id}(id = ${board.id})}" class="btn btn-primary" role="button">수정</a>
+        <button type="submit" class="btn btn-danger">글삭제</button>
+    </form>
     <div th:replace="fragments/footer :: footer" />
 </div> <!-- /container -->
 </body>
