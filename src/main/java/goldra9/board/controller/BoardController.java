@@ -38,7 +38,7 @@ public class BoardController
 
     @GetMapping("/board/list")
     public String boardList(Model model,
-                            @PageableDefault(size = 2, sort = "id",
+                            @PageableDefault(size = 5, sort = "id",
                                     direction = Sort.Direction.DESC) Pageable pageable,
                             @RequestParam(required = false, defaultValue = "") String searchKeyword)
     {
@@ -55,11 +55,12 @@ public class BoardController
             startPage = Math.max(1, list.getPageable().getPageNumber() - 1);
         }
 
-        if(nowPage <= 3)
+        if(list.getTotalPages() <= 5)
         {
+            endPage = list.getTotalPages();
+        } else if(nowPage <= 3){
             endPage = 5;
-            
-        } else {
+        } else{
             endPage = Math.min(list.getTotalPages(), nowPage + 2);
         }
 
